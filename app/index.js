@@ -18,6 +18,10 @@ setTimeout(function () {
         twittBot.post('statuses/update', {
             status: mp3Name.split('.')[0].replace(/_|[0-9]+/gi, ' ') + ' #kaamelott #citationDuJour',
             media_ids: [data.media_id_string]
-        });
+        }).then(function(){
+            fs.unlinkSync('current.mp4');
+            fs.unlinkSync(mp3Name);
+            fs.unlinkSync('mergedFile.mp3');
+        })
     });
 }, 15000);

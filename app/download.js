@@ -24,7 +24,7 @@ async function downloadSong() {
         );
     setTimeout(function () {
 
-        audioconcat(['./kaamelott-intro.mp3', currentSong.attribs.title])
+        audioconcat(['./sounds/kaamelott-intro.mp3', currentSong.attribs.title])
             .concat('./mergedFile.mp3')
             .on('end',async function (output) {
                await ffmpeg()
@@ -37,7 +37,7 @@ async function downloadSong() {
                         }
                     )
                     .addOption('-strict', 'experimental')
-                    .addInput('./background.jpg')
+                    .addInput('./imgs/background.jpg')
                     .addInput('./mergedFile.mp3')
                     .withAudioBitrate('64k')
                     .withVideoBitrate('768k')

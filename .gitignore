@@ -1,4 +1,4 @@
-# Logs
+7# Logs
 logs
 *.log
 npm-debug.log*
@@ -56,3 +56,6 @@ typings/
 
 # dotenv environment variables file
 .env
+current.mp4
+config.js
+.idea/
