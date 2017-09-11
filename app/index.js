@@ -10,7 +10,7 @@ if (process.env['consumer_key']) {
     config.access_token_secret = process.env['access_token_secret'];
     config.trigger_hours = process.env['trigger_hours'];
 }
-
+console.log(config);
 const twittBot = new twit(config);
 
 const download = require('./download');
@@ -28,6 +28,7 @@ let lastTrigger;
 
 function runTime() {
     let temp = moment().format('HH:mm');
+    console.log(temp);
     if (-1 !== config.trigger_hours.indexOf(temp) && lastTrigger != temp) {
         lastTrigger = temp;
 
@@ -41,8 +42,8 @@ function runTime() {
                     status: getTwittText(),
                     media_ids: [data.media_id_string]
                 }).then(function (resp) {
-                    console.log(arguments);
-                   console.log('tweet created at:',moment(resp.data.created_at).format('DD/MM/YYYY HH:mm'));
+                    //Mon Sep 11 09:52:53 +0000 2017
+                    console.log('tweet created at:', (moment(resp.data.created_at,'DDD MMM DD HH:mm:ss Z YYYY').format('DD-MM-YYYY HH:mm')));
                     deleteGeneratedFiles();
                 })
             });
@@ -53,7 +54,6 @@ function runTime() {
 }
 
 runTime();
-
 
 function getTwittText() {
     return mp3Name.split('.')[0].replace(/_|-|[a-z][0-9]+/gi, ' ') + ' #kaamelott #citationDuJour';
