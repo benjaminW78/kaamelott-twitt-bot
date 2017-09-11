@@ -3,7 +3,7 @@ const config = require('../config.js');
 const fs = require('fs');
 const moment = require('moment');
 const path = require('path');
-if (!config.consumer_key) {
+if (process.env['consumer_key']) {
     config.consumer_key = process.env['consumer_key'];
     config.consumer_secret = process.env['consumer_secret'];
     config.access_token = process.env['access_token'];
