@@ -6,6 +6,6 @@
  * access_token_secret
  */
 module.exports = {
-  trigger_hours: ['12:00','10:26']
+  trigger_hours: ['12:00','16:00']
 }
 

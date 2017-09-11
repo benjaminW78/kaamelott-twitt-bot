@@ -2,6 +2,13 @@ const twit = require('twit');
 const config = require('../config.js');
 const fs = require('fs');
 const moment = require('moment');
+const path = require('path');
+if (!config.consumer_key) {
+    config.consumer_key = process.env['consumer_key'];
+    config.consumer_secret = process.env['consumer_secret'];
+    config.access_token = process.env['access_token'];
+    config.access_token_secret = process.env['access_token_secret'];
+}
 
 const twittBot = new twit(config);
 
@@ -18,17 +25,16 @@ function runTime() {
         doDownload();
 
         setTimeout(function () {
-            let filePath = './current.mp4';
+            let filePath = __dirname + '/../current.mp4';
             twittBot.postMediaChunked({file_path: filePath}, function (err, data, response) {
 
                 twittBot.post('statuses/update', {
                     status: getTwittText(),
                     media_ids: [data.media_id_string]
-                }).then(function () {
+                }).then(function (resp) {
                     console.log(arguments);
-                    fs.unlinkSync('current.mp4');
-                    fs.unlinkSync(mp3Name);
-                    fs.unlinkSync('mergedFile.mp3');
+                   console.log('tweet created at:',moment(resp.data.created_at).format('DD/MM/YYYY HH:mm'));
+                    deleteGeneratedFiles();
                 })
             });
         }, 15000);
@@ -38,8 +44,10 @@ function runTime() {
 }
 
 runTime();
+
+
 function getTwittText() {
-    return mp3Name.split('.')[0].replace(/_|[0-9]+/gi, ' ') + ' #kaamelott #citationDuJour';
+    return mp3Name.split('.')[0].replace(/_|-|[a-z][0-9]+/gi, ' ') + ' #kaamelott #citationDuJour';
 }
 
 function doDownload() {
@@ -51,8 +59,15 @@ function doDownload() {
             return current.text.split(' https://')[0]
         });
         if (-1 !== twittsText.indexOf(getTwittText())) {
+            deleteGeneratedFiles();
             doDownload();
             console.log('DO DOWNLOAD AGAIN! because duplicate tweet: ' + getTwittText());
         }
     });
+}
+
+function deleteGeneratedFiles() {
+    fs.unlinkSync(__dirname + '/../current.mp4');
+    fs.unlinkSync(__dirname + '/../' + mp3Name);
+    fs.unlinkSync(__dirname + '/../mergedFile.mp3');
 }

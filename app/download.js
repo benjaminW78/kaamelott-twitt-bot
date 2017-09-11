@@ -3,7 +3,9 @@ const request = require('request-promise-native');
 const random = require('./random.js');
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
-const audioconcat = require('audioconcat')
+const audioconcat = require('audioconcat');
+const path = require('path');
+
 
 async function downloadSong() {
     let htmlPage = await request('https://github.com/2ec0b4/kaamelott-soundboard/tree/master/sounds').then((data)=> {
@@ -19,13 +21,13 @@ async function downloadSong() {
         .get('https://raw.githubusercontent.com/2ec0b4/kaamelott-soundboard/master/sounds/' + currentSong.attribs.title)
         .pipe(
             fs
-                .createWriteStream('./' + currentSong.attribs.title)
+                .createWriteStream(__dirname + '/../' + currentSong.attribs.title)
                 .on('close', ()=>console.log(currentSong.attribs.title))
         );
     setTimeout(function () {
 
-        audioconcat(['./sounds/kaamelott-intro.mp3', currentSong.attribs.title])
-            .concat('./mergedFile.mp3')
+        audioconcat([__dirname + '/../sounds/kaamelott-intro.mp3', __dirname + '/../' + currentSong.attribs.title])
+            .concat(__dirname + '/../mergedFile.mp3')
             .on('end', async function (output) {
                 await ffmpeg()
                     .on('error', (err, stdout, stderr) => {
@@ -37,13 +39,13 @@ async function downloadSong() {
                         }
                     )
                     .addOption('-strict', 'experimental')
-                    .addInput('./imgs/background' + random(([].length = 4)) + '.jpg')
-                    .addInput('./mergedFile.mp3')
+                    .addInput(__dirname + '/../imgs/background' + random(undefined, 4) + '.jpg')
+                    .addInput(__dirname + '/../mergedFile.mp3')
                     .withAudioBitrate('64k')
                     .withVideoBitrate('768k')
                     .withSize('640x360')
                     .outputOptions(['-r 1/5', '-vcodec h264', '-pix_fmt yuv420p', '-strict -2', '-acodec aac', '-t 00:05:00'])
-                    .output('./current.mp4')
+                    .output(__dirname + '/../current.mp4')
                     .run();
             })
     }, 5000);
