@@ -40,7 +40,7 @@ function runTime() {
                     status: getTwittText(mp3Name),
                     media_ids: [data.media_id_string]
                 }).then(function (resp) {
-                    console.log('tweet created at:', (moment(resp.data.created_at, 'ddd MMM DD HH:mm:ss Z YYYY').format('DD-MM-YYYY HH:mm')));
+                    console.log('tweet created at:', (moment(resp.data.created_at, 'ddd MMM DD HH:mm:ss +Z YYYY').format('DD-MM-YYYY HH:mm')));
                     deleteGeneratedFiles(mp3Name);
                 })
             });
