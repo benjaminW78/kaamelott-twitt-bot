@@ -3,6 +3,11 @@ const config = require('../config.js');
 const fs = require('fs');
 const moment = require('moment');
 const path = require('path');
+const http = require('http');
+const download = require('./download');
+const deleteGeneratedFiles = require('./deleteGeneratedFiles');
+const getTwittText = require('./getTwittText');
+
 if (process.env['consumer_key']) {
     config.consumer_key = process.env['consumer_key'];
     config.consumer_secret = process.env['consumer_secret'];
@@ -10,54 +15,43 @@ if (process.env['consumer_key']) {
     config.access_token_secret = process.env['access_token_secret'];
     config.trigger_hours = process.env['trigger_hours'];
 }
-console.log(config);
-const twittBot = new twit(config);
 
-const download = require('./download');
-// Load the http module to create an http server.
-const http = require('http');
+console.log('current config: ', config);
+
+const twittBot = new twit(config);
 
 // Configure our HTTP server to respond with Hello World to all requests.
 const server = http.createServer((request, response) => {
     response.writeHead(200, {"Content-Type": "text/plain"});
     response.end("tweettBot running\n");
 });
-server.listen(8080, '0.0.0.0');
 let mp3Name;
 let lastTrigger;
-console.log(new Date());
+
 function runTime() {
     let temp = moment().utcOffset('+0200').format('HH:mm');
-    console.log(temp);
     if (-1 !== config.trigger_hours.indexOf(temp) && lastTrigger != temp) {
         lastTrigger = temp;
-
         doDownload();
-
         setTimeout(function () {
             let filePath = __dirname + '/../current.mp4';
             twittBot.postMediaChunked({file_path: filePath}, function (err, data, response) {
-
                 twittBot.post('statuses/update', {
-                    status: getTwittText(),
+                    status: getTwittText(mp3Name),
                     media_ids: [data.media_id_string]
                 }).then(function (resp) {
-                    //Mon Sep 11 09:52:53 +0000 2017
-                    console.log('tweet created at:', (moment(resp.data.created_at,'DDD MMM DD HH:mm:ss Z YYYY').format('DD-MM-YYYY HH:mm')));
-                    deleteGeneratedFiles();
+                    console.log('tweet created at:', (moment(resp.data.created_at, 'ddd MMM DD HH:mm:ss Z YYYY').format('DD-MM-YYYY HH:mm')));
+                    deleteGeneratedFiles(mp3Name);
                 })
             });
         }, 15000);
     }
-
     setTimeout(runTime, 60000);
 }
 
-runTime();
+server.listen(8080, '0.0.0.0');
 
-function getTwittText() {
-    return mp3Name.split('.')[0].replace(/_|-|[a-z][0-9]+/gi, ' ') + ' #kaamelott #citationDuJour';
-}
+runTime();
 
 function doDownload() {
 
@@ -67,16 +61,10 @@ function doDownload() {
         let twittsText = request.data.map(function (current) {
             return current.text.split(' https://')[0]
         });
-        if (-1 !== twittsText.indexOf(getTwittText())) {
-            deleteGeneratedFiles();
+        if (-1 !== twittsText.indexOf(getTwittText(mp3Name))) {
+            deleteGeneratedFiles(mp3Name);
             doDownload();
-            console.log('DO DOWNLOAD AGAIN! because duplicate tweet: ' + getTwittText());
+            console.log('DO DOWNLOAD AGAIN! because duplicate tweet: ' + getTwittText(mp3Name));
         }
     });
-}
-
-function deleteGeneratedFiles() {
-    fs.unlinkSync(__dirname + '/../current.mp4');
-    fs.unlinkSync(__dirname + '/../' + mp3Name);
-    fs.unlinkSync(__dirname + '/../mergedFile.mp3');
 }
