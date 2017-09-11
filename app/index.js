@@ -27,7 +27,7 @@ let mp3Name;
 let lastTrigger;
 console.log(new Date());
 function runTime() {
-    let temp = moment().utcOffset('+0100').format('HH:mm');
+    let temp = moment().utcOffset('+0200').format('HH:mm');
     console.log(temp);
     if (-1 !== config.trigger_hours.indexOf(temp) && lastTrigger != temp) {
         lastTrigger = temp;
