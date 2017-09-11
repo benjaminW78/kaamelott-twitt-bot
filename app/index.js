@@ -8,6 +8,7 @@ if (!config.consumer_key) {
     config.consumer_secret = process.env['consumer_secret'];
     config.access_token = process.env['access_token'];
     config.access_token_secret = process.env['access_token_secret'];
+    config.trigger_hours = process.env['trigger_hours'];
 }
 
 const twittBot = new twit(config);
