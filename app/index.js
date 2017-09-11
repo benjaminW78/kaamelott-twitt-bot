@@ -21,7 +21,7 @@ const server = http.createServer((request, response) => {
     response.writeHead(200, {"Content-Type": "text/plain"});
     response.end("tweettBot running\n");
 });
-
+server.listen(8080, '0.0.0.0');
 let mp3Name;
 let lastTrigger;
 
