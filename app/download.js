@@ -39,7 +39,7 @@ async function downloadSong() {
                         }
                     )
                     .addOption('-strict', 'experimental')
-                    .addInput(__dirname + '/../imgs/background' + random(undefined, 4) + '.jpg')
+                    .addInput(__dirname + '/../imgs/background' + random(undefined, 3) + '.jpg')
                     .addInput(__dirname + '/../mergedFile.mp3')
                     .withAudioBitrate('64k')
                     .withVideoBitrate('768k')
