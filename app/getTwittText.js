@@ -1,3 +1,10 @@
-module.exports = function getTwittText(mp3Name) {
-    return mp3Name.split('.')[0].replace(/_|-|[a-z][0-9]+/gi, ' ') + ' #kaamelott #citationDuJour';
+const request = require('request-promise-native');
+
+module.exports = function getTwittText(mp3Name, soundsList) {
+    let data = soundsList;
+    let currentItem = data.find(current=> {
+        return current.file === mp3Name;
+    });
+    currentItem.twitt = currentItem.title.substring(0, 97) + '... #' + currentItem.character.replace(/ ,| |'|-|,/gi, '') + ' #kaamelott #citationDuJour';
+    return currentItem;
 };

@@ -1,13 +1,16 @@
 const cheerio = require('cheerio');
 const request = require('request-promise-native');
 const random = require('./random.js');
+const getTwittText = require('./getTwittText.js');
+const cleanName = require('./cleanNames');
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 const audioconcat = require('audioconcat');
 const path = require('path');
 
 
-async function downloadSong() {
+async function downloadSong(soundsList) {
+    let currentItem;
     let htmlPage = await request('https://github.com/2ec0b4/kaamelott-soundboard/tree/master/sounds').then((data)=> {
         return data;
     });
@@ -22,10 +25,16 @@ async function downloadSong() {
         .pipe(
             fs
                 .createWriteStream(__dirname + '/../' + currentSong.attribs.title)
-                .on('close', ()=>console.log(currentSong.attribs.title))
+                .on('close', ()=> {
+                    console.log(currentSong.attribs.title);
+                    currentItem = getTwittText(currentSong.attribs.title, soundsList)
+                })
         );
     setTimeout(function () {
-
+        let backgroundName = __dirname + '/../imgs/' + cleanName(currentItem.character) + '.jpg';
+        if (!fs.existsSync(backgroundName)) {
+            backgroundName = __dirname + '/../imgs/background' + random(undefined, 3) + '.jpg';
+        }
         audioconcat([__dirname + '/../sounds/kaamelott-intro.mp3', __dirname + '/../' + currentSong.attribs.title])
             .concat(__dirname + '/../mergedFile.mp3')
             .on('end', async function (output) {
@@ -39,7 +48,7 @@ async function downloadSong() {
                         }
                     )
                     .addOption('-strict', 'experimental')
-                    .addInput(__dirname + '/../imgs/background' + random(undefined, 3) + '.jpg')
+                    .addInput(backgroundName)
                     .addInput(__dirname + '/../mergedFile.mp3')
                     .withAudioBitrate('64k')
                     .withVideoBitrate('768k')
