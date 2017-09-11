@@ -25,9 +25,9 @@ const server = http.createServer((request, response) => {
 server.listen(8080, '0.0.0.0');
 let mp3Name;
 let lastTrigger;
-
+console.log(new Date());
 function runTime() {
-    let temp = moment().format('HH:mm');
+    let temp = moment().utcOffset('+0100').format('HH:mm');
     console.log(temp);
     if (-1 !== config.trigger_hours.indexOf(temp) && lastTrigger != temp) {
         lastTrigger = temp;
