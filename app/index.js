@@ -13,6 +13,14 @@ if (!config.consumer_key) {
 const twittBot = new twit(config);
 
 const download = require('./download');
+// Load the http module to create an http server.
+const http = require('http');
+
+// Configure our HTTP server to respond with Hello World to all requests.
+const server = http.createServer((request, response) => {
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.end("tweettBot running\n");
+});
 
 let mp3Name;
 let lastTrigger;
