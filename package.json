@@ -14,6 +14,7 @@
     "cheerio": "git://github.com/cheeriojs/cheerio.git",
     "ffmpeg": "0.0.4",
     "fluent-ffmpeg": "^2.1.2",
+    "moment": "^2.18.1",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "request-promise-native": "^1.0.4",
