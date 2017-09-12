@@ -6,12 +6,8 @@ The MIT License (MIT)
 this project is used to create videos from scrapped mp3 from a french serie soundboard and post it on twitter every day via this account : [@kaamelott_today](https://twitter.com/kaamelott_today).
 
 ### Table of Contents
-**[Practical information](#practical-information)** 
-**[Files tree](#files-tree)** 
-**[Installation](#installation)** 
-**[API documentation](#api-documentation)** 
-**[Example](#example)** 
-**[Acknowledgement](#acknowledgement)** **[Other project](#other-project)**
+**[Practical information](#practical-information)**  
+**[Files tree](#files-tree)**  
 
 ## **Practical information**
  *You must be familiar* with :
