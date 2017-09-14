@@ -21,11 +21,18 @@ console.log('current config: ', config);
 
 const twittBot = new twit(config);
 
-// Configure our HTTP server to respond with Hello World to all requests.
-const server = http.createServer((request, response) => {
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.end("tweettBot running\n");
+const express = require('express');
+const app = express();
+
+app.get('/new', function (req, res) {
+    doDownload();
+    res.send('200', 'new twitt send');
 });
+
+app.listen(8080, function () {
+    console.log('kaamelott-twitt-bot app listening on port 8080!')
+});
+
 let mp3Name;
 let lastTrigger;
 let soundsList;
@@ -33,14 +40,12 @@ let soundsList;
 function runTime() {
     let temp = moment().utcOffset('+0200').format('HH:mm');
     if (-1 !== config.trigger_hours.indexOf(temp) && lastTrigger != temp) {
-    lastTrigger = temp;
-    doDownload();
-    setTimeout(postTweetWithMediaText, 15000);
+        lastTrigger = temp;
+        doDownload();
     }
     setTimeout(runTime, 60000);
 }
 
-server.listen(8080, '0.0.0.0');
 
 runTime();
 
@@ -52,10 +57,10 @@ function postTweetWithMediaText() {
             status: getTwittText(mp3Name, soundsList).twitt,
             media_ids: [data.media_id_string]
         }).then(function (resp) {
-            console.log(resp.data);
+            console.log(resp.data.text);
             console.log('tweet created at:', (moment(resp.data.created_at, 'ddd MMM DD HH:mm:ss +Z YYYY').format('DD-MM-YYYY HH:mm')));
             deleteGeneratedFiles(mp3Name);
-        })
+        });
     });
 }
 async function doDownload() {
@@ -73,8 +78,9 @@ async function doDownload() {
     if (-1 !== twittsText.indexOf(getTwittText(mp3Name, soundsList).twitt)) {
         deleteGeneratedFiles(mp3Name);
         doDownload();
-        setTimeout(postTweetWithMediaText, 20000);
         console.log('DO DOWNLOAD AGAIN! because duplicate tweet: ' + getTwittText(mp3Name, soundsList).twitt);
+    } else {
+        setTimeout(postTweetWithMediaText, 20000);
     }
     return true;
 }
