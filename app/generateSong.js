@@ -42,8 +42,6 @@ function generateSong(currentSong, soundsList) {
                 .output(__dirname + '/../current.mp4')
                 .run();
         });
-
-    console.log('pouet', currentSong);
     return secondDeferred.promise;
 }
 module.exports = generateSong;

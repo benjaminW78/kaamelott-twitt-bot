@@ -45,7 +45,6 @@ async function doDownload() {
 
     let data = await download(soundsList);
     mp3Name = data;
-    console.log('pouet 2 ', mp3Name);
     if (data) {
         let request = await twittBot.get('statuses/user_timeline');
         let twittsText = request.data.map(function (current) {

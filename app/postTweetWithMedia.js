@@ -19,7 +19,7 @@ function postTweetWithMediaText(mp3Name, soundsList) {
         });
     });
 
-    return deferred;
+    return deferred.promise;
 }
 
 module.exports = postTweetWithMediaText;

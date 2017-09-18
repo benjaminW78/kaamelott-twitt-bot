@@ -14,7 +14,6 @@ async function downloadSong(soundsList) {
 
     const $ = new cheerio.load(htmlPage);
     let songList = $('tr.js-navigation-item>td.content>span>a').toArray();
-    // console.log(songList);
     let currentSong = songList[random(songList)];
     let firstDeferred = new Q.defer();
     // return 'http://kaamelott-soundboard.2ec0b4.fr/#son/' + songList[random(songList)].attribs.title.split('.')[0];
