@@ -21,7 +21,12 @@ function TwittBot() {
                 twittBot = new twit(config);
             }
             return twittBot;
+        },
+        getConfig: function () {
+            return config
         }
     }
 }
-module.exports = TwittBot().getTwittBot();
+let twittObject = TwittBot();
+module.exports.twittBot = twittObject.getTwittBot();
+module.exports.config = twittObject.getConfig();

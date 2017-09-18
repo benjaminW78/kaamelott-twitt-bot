@@ -8,7 +8,8 @@ const getTwittText = require('./getTwittText');
 const getSoundsList = require('./getSoundsJson');
 const postTweetWithMediaText = require('./postTweetWithMedia');
 const generateSong = require('./generateSong');
-const twittBot = require('./twittBot');
+const twittBot = require('./twittBot').twittBot;
+const config = require('./twittBot').config;
 
 const express = require('express');
 const app = express();

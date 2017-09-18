@@ -1,6 +1,6 @@
 const Q = require('q');
 const getTwittText = require('./getTwittText');
-const twittBot = require('./twittBot');
+const twittBot = require('./twittBot').twittBot;
 const moment = require('moment');
 
 function postTweetWithMediaText(mp3Name, soundsList) {
