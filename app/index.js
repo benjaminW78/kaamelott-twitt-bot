@@ -27,14 +27,13 @@ let lastTrigger;
 let soundsList;
 
 function runTime() {
-    doDownload();
 
-    // let temp = moment().utcOffset('+0200').format('HH:mm');
-    // if (-1 !== config.trigger_hours.indexOf(temp) && lastTrigger != temp) {
-    //     lastTrigger = temp;
-    //     doDownload();
-    // }
-    // setTimeout(runTime, 60000);
+    let temp = moment().utcOffset('+0200').format('HH:mm');
+    if (-1 !== config.trigger_hours.indexOf(temp) && lastTrigger != temp) {
+        lastTrigger = temp;
+        doDownload();
+    }
+    setTimeout(runTime, 60000);
 }
 
 
