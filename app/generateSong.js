@@ -6,9 +6,23 @@ const getTwittText = require('./getTwittText');
 const ffmpeg = require('fluent-ffmpeg');
 const random = require('./random');
 
-function generateSong(currentSong, soundsList) {
+function generateSong(currentSong, soundsList, isSlack = false) {
     let currentItem = getTwittText(currentSong, soundsList);
     let secondDeferred = new Q.defer();
+    let mergedSongPath;
+    let videoPath;
+    let randomNumber;
+    const introSongPath = __dirname + '/../sounds/kaamelott-intro.mp3';
+    const currentSongPath = __dirname + '/../' + currentSong;
+
+    if (isSlack) {
+        randomNumber = random(undefined, 100000);
+        mergedSongPath = __dirname + '/../mergedFile' + randomNumber + '.mp3';
+        videoPath = __dirname + '/../current' + randomNumber + '.mp4';
+    } else {
+        mergedSongPath = __dirname + '/../mergedFile.mp3';
+        videoPath = __dirname + '/../current.mp4';
+    }
 
     let backgroundName = __dirname + '/../imgs/' + cleanName(currentItem.character) + '.jpg';
 
@@ -16,8 +30,8 @@ function generateSong(currentSong, soundsList) {
         backgroundName = __dirname + '/../imgs/background' + random(undefined, 3) + '.jpg';
     }
 
-    audioconcat([__dirname + '/../sounds/kaamelott-intro.mp3', __dirname + '/../' + currentSong])
-        .concat(__dirname + '/../mergedFile.mp3')
+    audioconcat([introSongPath, currentSongPath])
+        .concat(mergedSongPath)
         .on('end', function (output) {
             ffmpeg()
                 .on('error', (err, stdout, stderr) => {
@@ -32,19 +46,23 @@ function generateSong(currentSong, soundsList) {
                 .on('end', (err, stdout, stderr) => {
                     console.log('--- ffmpeg end generation ---');
                     console.log('\n');
-                    secondDeferred.resolve(currentSong);
+                    if (isSlack) {
+                        secondDeferred.resolve([videoPath, randomNumber]);
+                    } else {
+                        secondDeferred.resolve(currentSong);
+                    }
                 }).on('start', (err, stdout, stderr) => {
-                    console.log('--- ffmpeg start generation ---');
+                console.log('--- ffmpeg start generation ---');
                 console.log('\n');
-                })
+            })
                 .addOption('-strict', 'experimental')
                 .addInput(backgroundName)
-                .addInput(__dirname + '/../mergedFile.mp3')
+                .addInput(mergedSongPath)
                 .withAudioBitrate('64k')
                 .withVideoBitrate('768k')
                 .withSize('640x360')
                 .outputOptions(['-r 1/5', '-vcodec h264', '-pix_fmt yuv420p', '-strict -2', '-acodec aac', '-t 00:05:00'])
-                .output(__dirname + '/../current.mp4')
+                .output(videoPath)
                 .run();
         });
     return secondDeferred.promise;

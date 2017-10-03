@@ -1,8 +1,8 @@
 const fs = require('fs');
-module.exports = function deleteGeneratedFiles(mp3Name) {
-    const currentPath = __dirname + '/../current.mp4';
-    const mp3Path = __dirname + '/../' + mp3Name;
-    const mergedSoundPath = __dirname + '/../mergedFile.mp3';
+module.exports = function deleteGeneratedFiles(mp3Name,randomNumber = '') {
+    const currentPath = __dirname + '/../current'+randomNumber+'.mp4';
+    const mp3Path = __dirname + '/../' + mp3Name.split('.mp3').join(randomNumber+'.mp3');
+    const mergedSoundPath = __dirname + '/../mergedFile'+randomNumber+'.mp3';
     if (fs.existsSync(currentPath)) {
         fs.unlinkSync(currentPath);
     }
