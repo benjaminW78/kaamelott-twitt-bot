@@ -2,7 +2,7 @@ const fs = require('fs');
 const moment = require('moment');
 const path = require('path');
 const http = require('http');
-const download = require('./download');
+const downloadSong = require('./download');
 const deleteGeneratedFiles = require('./deleteGeneratedFiles');
 const getTwittText = require('./getTwittText');
 const getSoundsList = require('./getSoundsJson');
@@ -43,17 +43,15 @@ runTime();
 
 async function doDownload() {
     soundsList = await getSoundsList();
-
-    let data = await download(soundsList);
+    let data = await downloadSong(soundsList);
     mp3Name = data;
     if (data) {
-        let request = await twittBot.get('statuses/user_timeline');
+        let request = await twittBot.get('statuses/user_timeline', {count: 200});
         let twittsText = request.data.map(function (current) {
-            return current.text.split(' https://')[0]
+            return current.text.split(' https://')[0];
         });
         let currentTwittText = getTwittText(mp3Name, soundsList);
         console.log(currentTwittText.twitt);
-
         if (-1 !== twittsText.indexOf(currentTwittText.twitt)) {
             deleteGeneratedFiles(mp3Name);
             doDownload();
