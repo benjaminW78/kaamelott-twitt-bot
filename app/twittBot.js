@@ -11,10 +11,9 @@ function TwittBot() {
         config.trigger_hours = process.env['trigger_hours'];
     }
 
-    console.log('current config: ', config);
+    console.log('current config: \n', config);
 
     let twittBot = new twit(config);
-    let instance = undefined;
     return {
         getTwittBot: function () {
             if (!twittBot) {

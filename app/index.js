@@ -32,6 +32,8 @@ function runTime() {
     let temp = moment().utcOffset('+0200').format('HH:mm');
     if (-1 !== config.trigger_hours.indexOf(temp) && lastTrigger != temp) {
         lastTrigger = temp;
+        console.log('\n START GENERATION TWITT: ' + moment().utcOffset('+0200').format('DD/MM/YYYY HH:mm'));
+
         doDownload();
     }
     setTimeout(runTime, 60000);
@@ -51,16 +53,18 @@ async function doDownload() {
             return current.text.split(' https://')[0];
         });
         let currentTwittText = getTwittText(mp3Name, soundsList);
-        console.log(currentTwittText.twitt);
         if (-1 !== twittsText.indexOf(currentTwittText.twitt)) {
             deleteGeneratedFiles(mp3Name);
             doDownload();
-            console.log('DO DOWNLOAD AGAIN! because duplicate tweet: ' + currentTwittText.twitt);
+            console.log('DO DOWNLOAD AGAIN! because duplicate tweet: ' + currentTwittText.twitt +'\n');
             return false;
         } else {
             let resultgenerateSong = await generateSong(mp3Name, soundsList);
             await postTweetWithMediaText(resultgenerateSong, soundsList);
             deleteGeneratedFiles(mp3Name);
+
+            console.log('\n END GENERATION TWEET: ' + moment().utcOffset('+0200').format('DD/MM/YYYY HH:mm'));
+
             return true;
         }
     } else {

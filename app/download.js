@@ -23,7 +23,7 @@ async function downloadSong(soundsList) {
             fs
                 .createWriteStream(__dirname + '/../' + currentSong.attribs.title)
                 .on('close', ()=> {
-                    console.log(currentSong.attribs.title);
+                    console.log('downloaded song name: ' + currentSong.attribs.title);
                     currentItem = getTwittText(currentSong.attribs.title, soundsList);
                     if (!currentItem) {
                         firstDeferred.reject(false);

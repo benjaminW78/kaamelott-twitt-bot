@@ -26,11 +26,16 @@ function generateSong(currentSong, soundsList) {
                     console.log(stdout);
                     console.log('--- ffmpeg stderr ---');
                     console.log(stderr);
+                    console.log('\n');
                     secondDeferred.reject(false);
                 })
                 .on('end', (err, stdout, stderr) => {
                     console.log('--- ffmpeg end generation ---');
+                    console.log('\n');
                     secondDeferred.resolve(currentSong);
+                }).on('start', (err, stdout, stderr) => {
+                    console.log('--- ffmpeg start generation ---');
+                console.log('\n');
                 })
                 .addOption('-strict', 'experimental')
                 .addInput(backgroundName)
