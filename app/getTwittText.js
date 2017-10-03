@@ -5,6 +5,10 @@ module.exports = function getTwittText(mp3Name, soundsList) {
     let currentItem = data.find(current=> {
         return current.file === mp3Name;
     });
-    currentItem.twitt = currentItem.title.substring(0, 97) + '... #' + currentItem.character.replace(/ ,| |'|-|,/gi, '') + ' #kaamelott #citationDuJour';
+
+    if (currentItem) {
+        currentItem.twitt = currentItem.title.substring(0, 97) + '... #' + currentItem.character.replace(/ ,| |'|-|,/gi, '') + ' #kaamelott #citationDuJour';
+    }
+
     return currentItem;
 };

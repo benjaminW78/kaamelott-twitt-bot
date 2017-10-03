@@ -25,7 +25,11 @@ async function downloadSong(soundsList) {
                 .on('close', ()=> {
                     console.log(currentSong.attribs.title);
                     currentItem = getTwittText(currentSong.attribs.title, soundsList);
-                    firstDeferred.resolve(currentSong.attribs.title);
+                    if (!currentItem) {
+                        firstDeferred.reject(false);
+                    } else {
+                        firstDeferred.resolve(currentSong.attribs.title);
+                    }
                 }).on('error', ()=> {
                 firstDeferred.reject(false);
             })
