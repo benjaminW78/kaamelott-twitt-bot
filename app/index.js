@@ -107,11 +107,23 @@ async function doNewSlack(req, res) {
             console.log('\n END GENERATION SLACK ITEM: ' + moment().utcOffset('+0200').format('DD/MM/YYYY HH:mm'));
 
         });
-        var form = currentRequest.form();
+
+        let form = currentRequest.form();
+
         form.append('file', fs.createReadStream(path.resolve(video)), {
-            filename: mp3Name
+            filename: mp3Name,
+            contentType: 'video/mpeg'
         });
-        res.send('c\'est pas faux');
+        res.send(
+            {
+                "response_type": "in_channel",
+                "text": "'c\'est pas faux'",
+                "attachments": [
+                    {
+                        "video": fs.createReadStream(path.resolve(video))
+                    }
+                ]
+            });
         return true;
     }
 }
