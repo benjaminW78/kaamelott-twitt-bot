@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "audioconcat": "0.1.3",
+    "body-parser": "^1.18.2",
     "cheerio": "git://github.com/cheeriojs/cheerio.git",
     "express": "4.15.4",
     "ffmpeg": "0.0.4",

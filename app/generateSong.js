@@ -6,17 +6,16 @@ const getTwittText = require('./getTwittText');
 const ffmpeg = require('fluent-ffmpeg');
 const random = require('./random');
 
-function generateSong(currentSong, soundsList, isSlack = false) {
+function generateSong(currentSong, soundsList, isSlack = false ,randomNumber = '') {
     let currentItem = getTwittText(currentSong, soundsList);
     let secondDeferred = new Q.defer();
     let mergedSongPath;
     let videoPath;
-    let randomNumber;
     const introSongPath = __dirname + '/../sounds/kaamelott-intro.mp3';
-    const currentSongPath = __dirname + '/../' + currentSong;
+    const currentSongPath = __dirname + '/../' + currentSong.split('.mp3').join(randomNumber + '.mp3');
 
     if (isSlack) {
-        randomNumber = random(undefined, 100000);
+
         mergedSongPath = __dirname + '/../mergedFile' + randomNumber + '.mp3';
         videoPath = __dirname + '/../current' + randomNumber + '.mp4';
     } else {
@@ -47,7 +46,7 @@ function generateSong(currentSong, soundsList, isSlack = false) {
                     console.log('--- ffmpeg end generation ---');
                     console.log('\n');
                     if (isSlack) {
-                        secondDeferred.resolve([videoPath, randomNumber]);
+                        secondDeferred.resolve(videoPath);
                     } else {
                         secondDeferred.resolve(currentSong);
                     }

@@ -2,6 +2,7 @@ const fs = require('fs');
 const moment = require('moment');
 const path = require('path');
 const http = require('http');
+const bodyParser = require('body-parser');
 const downloadSong = require('./download');
 const deleteGeneratedFiles = require('./deleteGeneratedFiles');
 const getTwittText = require('./getTwittText');
@@ -10,15 +11,24 @@ const postTweetWithMediaText = require('./postTweetWithMedia');
 const generateSong = require('./generateSong');
 const twittBot = require('./twittBot').twittBot;
 const config = require('./twittBot').config;
+const random = require('./random');
 
 const express = require('express');
 const app = express();
+
+
+var request = require('request');
+
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/new', function (req, res) {
     doNewTwitt();
     res.send('200', 'new twitt send');
 });
 app.post('/slack/new', function (req, res) {
+
+    console.log(req.body);
+
     console.log('\n START GENERATION SLACK ITEM: ' + moment().utcOffset('+0200').format('DD/MM/YYYY HH:mm'));
 
     doNewSlack(req, res);
@@ -79,20 +89,28 @@ async function doNewTwitt(withSlack = false) {
 
 async function doNewSlack(req, res) {
     soundsList = await getSoundsList();
-    let data = await downloadSong(soundsList);
+    let randomNumber = random(undefined, 100000);
+    let data = await downloadSong(soundsList, randomNumber);
     mp3Name = data;
     if (data) {
-        let request = await twittBot.get('statuses/user_timeline', {count: 200});
-        let twittsText = request.data.map(function (current) {
-            return current.text.split(' https://')[0];
-        });
-        let [video, randomNumber]= await generateSong(mp3Name, soundsList, true);
+        let video = await generateSong(mp3Name, soundsList, true, randomNumber);
 
-        res.sendFile(path.resolve(video), function () {
+        var currentRequest = request.post(req.body['response_url'], function (err, resp, body) {
             deleteGeneratedFiles(mp3Name, randomNumber);
-            console.log('\n END GENERATION SLACK ITEM: ' + moment().utcOffset('+0200').format('DD/MM/YYYY HH:mm'));
-        });
+            if (err) {
+                console.log('Error!');
+            } else {
+                console.log('URL: ' + body);
 
+
+            }
+            console.log('\n END GENERATION SLACK ITEM: ' + moment().utcOffset('+0200').format('DD/MM/YYYY HH:mm'));
+
+        });
+        var form = currentRequest.form();
+        form.append('file', fs.createReadStream(path.resolve(video)), {
+            filename: mp3Name
+        });
 
         return true;
     }
