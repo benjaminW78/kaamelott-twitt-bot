@@ -111,7 +111,7 @@ async function doNewSlack(req, res) {
         form.append('file', fs.createReadStream(path.resolve(video)), {
             filename: mp3Name
         });
-
+        res.send('c\'est pas faux');
         return true;
     }
 }
