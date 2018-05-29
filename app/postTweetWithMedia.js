@@ -13,7 +13,7 @@ function postTweetWithMediaText(mp3Name, soundsList) {
             media_ids: [data.media_id_string]
         }).then(function (resp) {
 
-            console.log('tweet created at:', (moment(resp.data.created_at, 'ddd MMM DD HH:mm:ss +Z YYYY').format('DD-MM-YYYY HH:mm')));
+            console.log('tweet created at:', (moment(resp.data.created_at, 'ddd MMM DD HH:mm:ss +Z YYYY').utcOffset('+0200').format('DD-MM-YYYY HH:mm')));
             console.log('\n');
             console.log('tweet created text: ' + resp.data.text);
             deferred.resolve();
