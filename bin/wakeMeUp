@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+const axios = require('axios')
+const ping = async () => {
+
+    const result = await axios.get('https://kaamelott-twitt-bot.herokuapp.com/new')
+    console.log('ping done', result.status)
+}
+ping()
