@@ -5,6 +5,7 @@
   "main": "./app/index.js",
   "scripts": {
     "start": "node app/index.js",
+    "dev": "nodemon app/index.js",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "engines": {
@@ -26,5 +27,8 @@
     "request-promise": "4.2.1",
     "request-promise-native": "1.0.4",
     "twit": "2.2.9"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
   }
 }
