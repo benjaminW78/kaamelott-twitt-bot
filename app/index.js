@@ -59,33 +59,40 @@ runTime()
 
 
 async function doNewTwitt(withSlack = false) {
-    soundsList = await getSoundsList()
-    let data = await downloadSong(soundsList)
-    mp3Name = data
-    if (data) {
-        let request = await twittBot.get('statuses/user_timeline', { count: 200 })
-        let twittsText = request.data.map(function (current) {
-            return current.text.split(' https://')[0]
-        })
-        let currentTwittText = getTwittText(mp3Name, soundsList)
-        if (-1 !== twittsText.indexOf(currentTwittText.twitt)) {
-            deleteGeneratedFiles(mp3Name)
-            doNewTwitt()
-            console.log('DO DOWNLOAD AGAIN! because duplicate tweet: ' + currentTwittText.twitt + '\n')
-            return false
+    try {
+        soundsList = await getSoundsList()
+        let data = await downloadSong(soundsList)
+        mp3Name = data
+
+        if (data) {
+            let request = await twittBot.get('statuses/user_timeline', { tweet_mode: 'extended', count: 200 })
+
+            let currentTwittText = getTwittText(mp3Name, soundsList)
+            let twittsText = request.data.map(function (current) {
+                return current.full_text.split(' https://')[0]
+            })
+            if (-1 !== twittsText.indexOf(currentTwittText.twitt)) {
+                deleteGeneratedFiles(mp3Name)
+                doNewTwitt()
+                console.log('DO DOWNLOAD AGAIN! because duplicate tweet: ' + currentTwittText.twitt + '\n')
+                return false
+            } else {
+                let resultgenerateSong = await generateSong(mp3Name, soundsList)
+                await postTweetWithMediaText(resultgenerateSong, soundsList)
+                deleteGeneratedFiles(mp3Name)
+
+                console.log('\n END GENERATION TWEET: ' + moment().utcOffset('+0200').format('DD/MM/YYYY HH:mm'))
+
+                return true
+            }
         } else {
-            let resultgenerateSong = await generateSong(mp3Name, soundsList)
-            await postTweetWithMediaText(resultgenerateSong, soundsList)
-            deleteGeneratedFiles(mp3Name)
-
-            console.log('\n END GENERATION TWEET: ' + moment().utcOffset('+0200').format('DD/MM/YYYY HH:mm'))
-
-            return true
+            doNewTwitt()
         }
-    } else {
-        doNewTwitt()
+    } catch (err) {
+        console.log(err)
     }
 }
+
 
 async function doNewSlack(req, res) {
     soundsList = await getSoundsList()
