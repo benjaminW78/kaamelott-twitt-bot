@@ -18,7 +18,7 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "cheerio": "git://github.com/cheeriojs/cheerio.git",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "ffmpeg": "0.0.4",
     "fluent-ffmpeg": "2.1.2",
     "moment": "^2.19.3",
